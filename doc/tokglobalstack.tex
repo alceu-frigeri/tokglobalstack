@@ -1,0 +1,239 @@
+%%%==============================================================================
+% WinEdt pragmas
+% !Mode:: "TeX:EN"
+% Default Compile engines:
+% !TEX program = pdflatex
+% !PDFTeXify ext =  --enable-etex  --restrict-write18
+% !PDFLaTeX ext  =  --enable-etex  --restrict-write18
+% !BIB program = biber
+%%%==============================================================================
+%% Copyright 2026-present by Alceu Frigeri
+%%
+%% This work may be distributed and/or modified under the conditions of
+%%
+%% * The [LaTeX Project Public License](http://www.latex-project.org/lppl.txt),
+%%   version 1.3c (or later), and/or
+%% * The [GNU Affero General Public License](https://www.gnu.org/licenses/agpl-3.0.html),
+%%   version 3 (or later)
+%%
+%% This work has the LPPL maintenance status *maintained*.
+%%
+%% The Current Maintainer of this work is Alceu Frigeri
+%%
+%% This is version {1.0} {2026/02/18}
+%%
+%% The list of files that compose this work can be found in the README.md file at
+%% https://ctan.org/pkg/tokglobalstack
+%%
+%%%==============================================================================
+\documentclass[10pt]{article}
+\RequirePackage[verbose,a4paper,marginparwidth=27.5mm,top=2.5cm,bottom=1.5cm,hmargin={40mm,20mm},marginparsep=2.5mm,columnsep=10mm,asymmetric]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[infograb,silence]{codedescribe}
+\RequirePackage[inline]{enumitem}
+\SetEnumitemKey{miditemsep}{parsep=0ex,itemsep=0.4ex}
+
+\usepackage{tokglobalstack}
+
+%% if needed
+\RequirePackage[backend=biber]{biblatex}
+\addbibresource{tokglobalstack.bib}
+
+\newcodekey{globalstack}
+  {
+    letter = {_},
+    texcs = [3]{globalstack_csnew, globalstack_new, globalstack_gpush, globalstack_gput_right, globalstack_gput_left, globalstack_gpop },
+    emph  = [3]{myStackA_gpush,myStackA_gput_left,myStackA_gput_right,myStackA_gpop,g_myStackB_stack},
+    keywd = [2]{l__mytest_tmpa_bool,l__mytest_tmpb_bool,l__mytest_tmpc_bool,mytest_show_bools},
+    codeprefix = {},
+    resultprefix = {},
+  }
+
+\RequirePackage[hidelinks,hypertexnames=false]{hyperref}
+
+\begin{document}
+\tstitle{
+  author={Alceu Frigeri\footnote{\tsfmt{\url{https://github.com/alceu-frigeri/tokglobalstack}}}},
+  date={\tsdate},
+  title={The tokglobalstack Package\break  Version \PkgInfo{tokglobalstack}{version}}
+  }
+  
+
+\begin{typesetabstract}
+ 
+This package offers two stack's implementations. Those stacks can be used to, for instance, preserve some tokens beyond a variable number of nested groups, or to implement recursive commands without relying on local groups.
+\end{typesetabstract}
+
+\tableofcontents
+
+\tsOn
+
+\section{Introduction}
+When it's necessary to preserve the value of some tokens beyond a local group, in simple cases, it's enough to use !:[code,or]{\group_insert_after:N,\aftergroup}.
+
+But, sometimes you don't have (or can't use) this information, see \cite{exchange}, for instance. For those cases, this package deploys a strategy (presented and compared in \cite{xstacks}) based on stacks.
+
+These stacks can also be used to write recursive commands (preserving variables) without having to rely on local group scoping. 
+
+
+\section{Stack Variable}
+
+\begin{codedescribe}{\globalstack_new:N,\globalstack_gpush:Nn,\globalstack_gput_right:Nn,\globalstack_gput_left:Nn,\globalstack_gpop:N}
+\begin{codesyntax}%
+!!?{\globalstack_new:N}{stack-var}
+!!?{\globalstack_gpush:Nn}{stack-var,tokens}
+!!?{\globalstack_gput_right:Nn}{stack-var,tokens}
+!!?{\globalstack_gput_left:Nn}{stack-var,tokens}
+!!?{\globalstack_gpop:N}{stack-var}
+\end{codesyntax}
+!:{\globalstack_new:N} will globally create a stack variable named !:[marg]{stack-var} (a specialized token list variable). Once created it is possible to push tokens into it (!:{\globalstack_gpush:Nn}), amend tokens to the top (!:{\globalstack_gput_right:Nn,\globalstack_gput_left:Nn}) and pop those tokens (!:{\globalstack_gpop:N}) into the input stream. All assignments being global.
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if !:[marg]{stack-var} is already used.
+\end{tsremark}
+
+
+
+\section{Custom Stack Commands}
+
+\begin{codedescribe}{\globalstack_csnew:n}
+\begin{codesyntax}%
+!!?{\globalstack_csnew:n}{stack-prefix}
+\end{codesyntax}
+This will globally create a set of commands, named after !:[marg]{stack-prefix}, to push, put and pop items from a private global stack. All assignments to/from that stack will be global, and the stack itself will be unique to the command's set.
+\end{codedescribe}
+\begin{tsremark}
+  An error will be raised if !:[marg]{stack-prefix} is already used.
+\end{tsremark}
+
+\begin{codedescribe}{\<stack-prefix>_gpush:n,\<stack-prefix>_gput_right:n,\<stack-prefix>_gput_left:n,\<stack-prefix>_gpop:}
+\begin{codesyntax}%
+!!?{\<stack-prefix>_gpush:n}{tokens}
+!!?{\<stack-prefix>_gput_right:n}{tokens}
+!!?{\<stack-prefix>_gput_left:n}{tokens}
+!!?{\<stack-prefix>_gput_gpop:}{}
+\end{codesyntax}
+The !:{\<stack-prefix>_gpush:n} will push !:[marg]{tokens} (can be any number of tokens) into a global, private, stack. !:{\<stack-prefix>_gput_right:n,\<stack-prefix>_gput_left:n} will amend tokens to it, and !:{\<stack-prefix>_gpop:}, as the name implies, will insert the top of the stack into the input stream. That way it is possible to have a very fine control of what, where and when the items are collected and used.
+\end{codedescribe}
+
+
+
+\section{Examples of Use}
+In the following examples, two stacks will be used, !:[marg]{myStackA,myStackB} (one of each kind).
+
+\begin{codestore}[globalstack]
+\ExplSyntaxOn
+  % Just a set of booleans for testing
+  \bool_new:N \l__mytest_tmpa_bool
+  \bool_new:N \l__mytest_tmpb_bool
+  \bool_new:N \l__mytest_tmpc_bool
+  \cs_new:Npn \mytest_show_bools:n #1
+    { \underline{#1:}\par
+      \bool_if:NTF \l__mytest_tmpa_bool {{\color{red}a~true}}{a~false}  ~-~
+      \bool_if:NTF \l__mytest_tmpb_bool {{\color{red}b~true}}{b~false}  ~-~
+      \bool_if:NTF \l__mytest_tmpc_bool {{\color{red}c~true}}{c~false}  \par
+    }
+    
+  \globalstack_csnew:n {myStackA}
+  \globalstack_new:N \g_myStackB_stack
+\ExplSyntaxOff
+\end{codestore}
+
+\tscode*[globalstack]{globalstack}
+\tsexec{globalstack}
+
+
+
+\subsection{Using Custom Stack Commands}
+ Using just one position (of the stack) and restoring all tokens in a single point.
+\begin{codestore}[globalstack]
+\ExplSyntaxOn
+\group_begin:
+  {{ \myStackA_gpush:n 
+       {\bool_set_true:N \l__mytest_tmpa_bool}
+  {{ \myStackA_gput_right:n 
+       {\bool_set_true:N \l__mytest_tmpb_bool}
+     \mytest_show_bools:n {T1}     
+  }} \mytest_show_bools:n {T2}     
+  }} \myStackA_gpop:     
+     \mytest_show_bools:n {T3}
+\group_end:  
+\ExplSyntaxOff
+\end{codestore}
+
+\tsdemo[globalstack]{globalstack}[2]
+
+Using two positions (of the stack) and restoring the tokens in separated points.
+\begin{codestore}[globalstack]
+\ExplSyntaxOn
+\group_begin:
+  {{ \myStackA_gpush:n 
+       {\bool_set_true:N \l__mytest_tmpa_bool}
+  {{ \myStackA_gpush:n 
+       {\bool_set_true:N \l__mytest_tmpb_bool}
+     \mytest_show_bools:n {T1}     
+  }} \myStackA_gpop:
+     \mytest_show_bools:n {T2}
+  }} \myStackA_gpop:     
+     \mytest_show_bools:n {T3}
+\group_end:  
+\ExplSyntaxOff
+\end{codestore}
+
+\tsdemo[globalstack]{globalstack}[3]
+
+
+
+\subsection{Using a Stack Variable}
+Using just one position (of the stack) and restoring all tokens in a single point.
+\begin{codestore}[globalstack]
+\ExplSyntaxOn
+\group_begin:
+  {{ \globalstack_gpush:Nn \g_myStackB_stack
+       {\bool_set_true:N \l__mytest_tmpa_bool}
+  {{ \globalstack_gput_right:Nn \g_myStackB_stack 
+       {\bool_set_true:N \l__mytest_tmpb_bool}
+     \mytest_show_bools:n {T1}   
+  }} \mytest_show_bools:n {T2}
+  }} \globalstack_gpop:N   \g_myStackB_stack    
+     \mytest_show_bools:n {T3}
+\group_end:  
+\ExplSyntaxOff
+\end{codestore}
+
+
+\tsdemo[globalstack]{globalstack}[4]
+
+Using two positions (of the stack) and restoring the tokens in separated points.
+
+\begin{codestore}[globalstack]
+\ExplSyntaxOn
+\group_begin:
+  {{ \globalstack_gpush:Nn \g_myStackB_stack
+       {\bool_set_true:N \l__mytest_tmpa_bool}
+  {{ \globalstack_gpush:Nn \g_myStackB_stack 
+       {\bool_set_true:N \l__mytest_tmpb_bool}
+     \mytest_show_bools:n {T1}   
+  }} \globalstack_gpop:N   \g_myStackB_stack    
+     \mytest_show_bools:n {T2}
+  }} \globalstack_gpop:N   \g_myStackB_stack    
+     \mytest_show_bools:n {T3}
+\group_end:  
+\ExplSyntaxOff
+\end{codestore}
+
+\tsdemo[globalstack]{globalstack}[5]
+
+%\ExplSyntaxOn
+%\cs_show:N
+%\ExplSyntaxOff
+
+\tsOff
+
+
+%% if needed
+\printbibliography
+
+\end{document} 

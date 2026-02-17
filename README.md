@@ -1,13 +1,10 @@
-<PackageNAME>
+tokglobalstack
 ==========
 
-Template for LaTeX packages ...
-
-<PackageDescription>
+tokglobalstack - (multiple) global stack(s)
 
 For more details,  see the documentation,
-[<PackageNAME>.pdf](http://mirrors.ctan.org/macros/latex/contrib/<PackageNAME>/doc/<PackageNAME>.pdf)
-[<PackageNAME>.pdf](http://mirrors.ctan.org/graphics/pgf/contrib/<PackageNAME>/doc/<PackageNAME>.pdf)
+[tokglobalstack.pdf](http://mirrors.ctan.org/macros/latex/contrib/tokglobalstack/doc/tokglobalstack.pdf)
 	
 --------------
 
@@ -16,12 +13,12 @@ For more details,  see the documentation,
 (with the new in kernel *\ProcessKeyOptions* and *\NewDocumentCommand*).
 
 ## Installation
-The stable version is available at [CTAN](https://ctan.org/pkg/<PackageNAME>).
+The stable version is available at [CTAN](https://ctan.org/pkg/tokglobalstack).
 
 ## Usage
 Just place
 ```latex
-  \usepackage{<PackageNAME>}
+  \usepackage{tokglobalstack}
 ```
 
 in the preamble and compile away.
@@ -29,13 +26,13 @@ in the preamble and compile away.
 ## Contacting Author
 
 For bug reports and enhancement suggestions, the preferred way is to use
-[the project's issue page](https://github.com/alceu-frigeri/<PackageNAME>/issues).
+[the project's issue page](https://github.com/alceu-frigeri/tokglobalstack/issues).
 Please be ready to provide an example code showing the bug, if any.
 
-* git: https://github.com/alceu-frigeri/<PackageNAME>
+* git: https://github.com/alceu-frigeri/tokglobalstack
 
 -------------
-Copyright 2025-present by Alceu Frigeri
+Copyright 2026-present by Alceu Frigeri
 
  This work may be distributed and/or modified under the
  conditions of
@@ -51,37 +48,22 @@ The Current Maintainer of this work is Alceu Frigeri
 
 ### This work consist of the files
 
-* <PackageNAME>.sty
+* tokglobalstack.sty
     - the package itself
 
 * README.md  (this file)
     - quick introduction
 
-* <PackageNAME>.bib
-* <PackageNAME>.tex
+* tokglobalstack.bib
+* tokglobalstack.tex
     - package documentation
     
-* <PackageNAME>.pdf
+* tokglobalstack.pdf
     - documentation in PDF format
     
 -------------
 
 ### Change log
-
-* Version 1.0e (this)
-  - minimum `kernel` version update
-
-* Version 1.0d
-  - typos, added silence option
-
-* Version 1.0c
-  - using `\pkginfograbProvidesExplPackage`
-
-* Version 1.0b
-  - requiring {pkginfo} now.
-
-* Version 1.0a
-  - some typos. added biber template.
 
 * Version 1.0
     - Initial setup.
