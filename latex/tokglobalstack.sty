@@ -97,12 +97,12 @@
           {
             \exp_not:N \if_int_compare:w \exp_not:c {g__globalstack_ #1 _int} =  \c_zero_int
             \exp_not:N \else:
-                \exp_not:c {g__globalstack_ #1 _ref_tl}
-                \exp_not:N \int_gdecr:N \exp_not:c {g__globalstack_ #1 _int}
-            \exp_not:N \exp_args:NNc
-              \exp_not:N \tl_gset:Nn 
               \exp_not:c {g__globalstack_ #1 _ref_tl}
-              {g__globalstack_ #1 _ \exp_not:N \int_use:N \exp_not:c {g__globalstack_ #1 _int} _tl}            
+              \exp_not:N \int_gdecr:N \exp_not:c {g__globalstack_ #1 _int}
+              \exp_not:N \exp_args:NNc
+                \exp_not:N \tl_gset:Nn 
+                \exp_not:c {g__globalstack_ #1 _ref_tl}
+                {g__globalstack_ #1 _ \exp_not:N \int_use:N \exp_not:c {g__globalstack_ #1 _int} _tl}            
             \exp_not:N \fi:
           }
       }
